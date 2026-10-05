@@ -1,14 +1,10 @@
-let usuarios = [];
+let usuarios = [
+  { "matricula": "1001", "nome": "Ana Souza", "senha": "cantina123", "perfil": "atendente", "ativo": true },
+  { "matricula": "1002", "nome": "Bruno Lima", "senha": "lanche2026", "perfil": "atendente", "ativo": true },
+  { "matricula": "2001", "nome": "Carla Mendes", "senha": "super2026", "perfil": "supervisor", "ativo": true },
+  { "matricula": "2002", "nome": "Diego Rocha", "senha": "diego2026", "perfil": "atendente", "ativo": false }
+];
 
-fetch("dados/usuarios.json")
-  .then((resposta) => resposta.json())
-  .then((lista) => {
-    usuarios = lista;
-    console.log(usuarios);
-  })
-  .catch(() => {
-    mostrarMensagem("Não foi possível carregar os usuários. Abra o projeto pelo Live Server.", "erro");
-  });
 
 function mostrarMensagem(texto, tipo) {
   const mensagem = document.getElementById("mensagem");
@@ -29,6 +25,14 @@ function entrar() {
   const resultado = autenticar(usuarios, matricula, senha);
 
   if (resultado.aceito) {
+    const usuarioLogado = {
+      matricula: resultado.usuario.matricula,
+      nome: resultado.usuario.nome,
+      perfil: resultado.usuario.perfil
+    };
+    localStorage.setItem("usuarioLogado", JSON.stringify(usuarioLogado));
+    console.log(localStorage.getItem("usuarioLogado"));
+    console.log(JSON.parse(localStorage.getItem("usuarioLogado")));
     mostrarMensagem(resultado.mensagem + " Perfil: " + resultado.usuario.perfil + ".", "sucesso");
   } else {
     mostrarMensagem(resultado.mensagem, "erro");
