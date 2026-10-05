@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrar | Cantina MetalVale</title>
+    <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+
+    <header class="topo">
+        <h1 class="marca">Cantina <span>MetalVale</span></h1>
+        <p class="slogan">Retirada de lanches sem ficha de papel</p>
+    </header>
+
+    <main class="conteudo">
+        <section class="cartao" aria-labelledby="titulo-login">
+            <h2 id="titulo-login">Entrar</h2>
+            <p class="instrucao">Acesso da equipe do refeitório e da supervisão.</p>
+
+            <form onsubmit="entrar(); return false;">
+                <label for="matricula">Matrícula</label>
+                <input id="matricula" type="text" inputmode="numeric" autocomplete="username"
+                       placeholder="Ex.: 1001" required>
+
+                <label for="senha">Senha</label>
+                <input id="senha" type="password" autocomplete="current-password" required>
+
+                <button id="botao-entrar" type="submit">Entrar</button>
+            </form>
+
+            <p id="mensagem" class="mensagem" role="status" aria-live="polite"></p>
+        </section>
+    </main>
+
+    <footer class="rodape">
+        <p>MetalVale Componentes S.A. &bull; Vale do Itajaí/SC</p>
+    </footer>
+
+    <script src="js/funcoes.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

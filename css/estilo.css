@@ -1,0 +1,163 @@
+
+:root {
+    --azul: #1f4e79;
+    --laranja: #e8711a;
+    --fundo: #eef2f6;
+    --texto: #2b2f33;
+    --texto-claro: #5f6b76;
+    --borda: #cfd8e1;
+    --erro: #b3261e;
+    --sucesso: #1e7b34;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: var(--fundo);
+    color: var(--texto);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.topo {
+    background: var(--azul);
+    color: #fff;
+    text-align: center;
+    padding: 2rem 1rem 3.5rem;
+    border-bottom: 4px solid var(--laranja);
+}
+
+.marca {
+    font-size: 1.6rem;
+    font-weight: 800;
+}
+
+.marca span {
+    color: var(--laranja);
+}
+
+.slogan {
+    font-size: 0.9rem;
+    opacity: 0.85;
+    margin-top: 0.25rem;
+}
+
+.conteudo {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    padding: 0 1rem;
+}
+
+.cartao {
+    background: #fff;
+    width: 100%;
+    max-width: 380px;
+    margin-top: -2rem;
+    margin-bottom: 2rem;
+    padding: 1.75rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    align-self: flex-start;
+}
+
+.cartao h2 {
+    color: var(--azul);
+    font-size: 1.35rem;
+}
+
+.instrucao {
+    color: var(--texto-claro);
+    font-size: 0.88rem;
+    margin: 0.25rem 0 1.25rem;
+}
+
+label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--texto-claro);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0.9rem 0 0.35rem;
+}
+
+input {
+    width: 100%;
+    padding: 0.75rem 0.85rem;
+    font: inherit;
+    font-size: 1rem;
+    border: 1px solid var(--borda);
+    border-radius: 8px;
+}
+
+input:focus {
+    outline: 2px solid var(--laranja);
+    border-color: var(--laranja);
+}
+
+button {
+    width: 100%;
+    margin-top: 1.5rem;
+    padding: 0.85rem;
+    font: inherit;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    background: var(--laranja);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #cf5f0f;
+}
+
+.mensagem {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    border-radius: 8px;
+}
+
+.mensagem.erro,
+.mensagem.sucesso {
+    padding: 0.7rem 0.85rem;
+}
+
+.mensagem.erro {
+    color: var(--erro);
+    background: #fdecea;
+}
+
+.mensagem.sucesso {
+    color: var(--sucesso);
+    background: #e7f5ea;
+}
+
+.rodape {
+    text-align: center;
+    font-size: 0.78rem;
+    color: var(--texto-claro);
+    padding: 1rem;
+}
+
+@media (min-width: 768px) {
+    .topo {
+        padding: 3rem 1rem 4.5rem;
+    }
+
+    .marca {
+        font-size: 2.1rem;
+    }
+
+    .cartao {
+        padding: 2.25rem 2rem;
+    }
+}
