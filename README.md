@@ -1,3 +1,0 @@
-# aplicativo
-# aplicativo
-# aplicativo
