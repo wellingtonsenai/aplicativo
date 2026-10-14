@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrar | Cantina MetalVale</title>
+    <link rel="stylesheet" href="css/estilo.css">
+
+    <style>
+        #nome, #matricula, #perfil{
+            width: 100%;
+            float: left;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="topo">
+        <h1 class="marca">Cantina <span>MetalVale</span></h1>
+        <p class="slogan">Retirada de lanches sem ficha de papel</p>
+    </header>
+
+    <main class="conteudo">
+       <p id="nome"></p>
+       <p id="matricula"></p>
+       <p id="perfil"></p>
+    </main>
+
+    <footer class="rodape">
+        <p>MetalVale Componentes S.A. &bull; Vale do Itajaí/SC</p>
+    </footer>
+
+    <script>
+        document.getElementById("nome").innerText = localStorage.getItem('nome');
+        document.getElementById("matricula").innerText = localStorage.getItem('matricula');
+        document.getElementById("perfil").innerText = localStorage.getItem('perfil');
+    </script>
+</body>
+</html>
