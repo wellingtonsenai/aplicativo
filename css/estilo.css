@@ -29,12 +29,12 @@ body {
     background: var(--azul);
     color: #fff;
     text-align: center;
-    padding: 2rem 1rem 3.5rem;
+    padding: 32px 16px 56px;
     border-bottom: 4px solid var(--laranja);
 }
 
 .marca {
-    font-size: 1.6rem;
+    font-size: 26px;
     font-weight: 800;
 }
 
@@ -43,25 +43,25 @@ body {
 }
 
 .slogan {
-    font-size: 0.9rem;
+    font-size: 14px;
     opacity: 0.85;
-    margin-top: 0.25rem;
+    margin-top: 4px;
 }
 
 .conteudo {
     flex: 1;
     display: flex;
     justify-content: center;
-    padding: 0 1rem;
+    padding: 0 16px;
 }
 
 .cartao {
     background: #fff;
     width: 100%;
     max-width: 380px;
-    margin-top: -2rem;
-    margin-bottom: 2rem;
-    padding: 1.75rem 1.5rem;
+    margin-top: -32px;
+    margin-bottom: 32px;
+    padding: 28px 24px;
     border-radius: 12px;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
     align-self: flex-start;
@@ -69,30 +69,30 @@ body {
 
 .cartao h2 {
     color: var(--azul);
-    font-size: 1.35rem;
+    font-size: 22px;
 }
 
 .instrucao {
     color: var(--texto-claro);
-    font-size: 0.88rem;
-    margin: 0.25rem 0 1.25rem;
+    font-size: 14px;
+    margin: 4px 0 20px;
 }
 
 label {
     display: block;
-    font-size: 0.8rem;
+    font-size: 13px;
     font-weight: 600;
     color: var(--texto-claro);
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin: 0.9rem 0 0.35rem;
+    margin: 14px 0 6px;
 }
 
 input {
     width: 100%;
-    padding: 0.75rem 0.85rem;
+    padding: 12px 14px;
     font: inherit;
-    font-size: 1rem;
+    font-size: 16px;
     border: 1px solid var(--borda);
     border-radius: 8px;
 }
@@ -104,10 +104,10 @@ input:focus {
 
 button {
     width: 100%;
-    margin-top: 1.5rem;
-    padding: 0.85rem;
+    margin-top: 24px;
+    padding: 14px;
     font: inherit;
-    font-size: 1rem;
+    font-size: 16px;
     font-weight: 700;
     color: #fff;
     background: var(--laranja);
@@ -121,14 +121,14 @@ button:hover {
 }
 
 .mensagem {
-    margin-top: 1rem;
-    font-size: 0.9rem;
+    margin-top: 16px;
+    font-size: 14px;
     border-radius: 8px;
 }
 
 .mensagem.erro,
 .mensagem.sucesso {
-    padding: 0.7rem 0.85rem;
+    padding: 11px 14px;
 }
 
 .mensagem.erro {
@@ -143,21 +143,21 @@ button:hover {
 
 .rodape {
     text-align: center;
-    font-size: 0.78rem;
+    font-size: 12px;
     color: var(--texto-claro);
-    padding: 1rem;
+    padding: 16px;
 }
 
 @media (min-width: 768px) {
     .topo {
-        padding: 3rem 1rem 4.5rem;
+        padding: 48px 16px 72px;
     }
 
     .marca {
-        font-size: 2.1rem;
+        font-size: 34px;
     }
 
     .cartao {
-        padding: 2.25rem 2rem;
+        padding: 36px 32px;
     }
 }
