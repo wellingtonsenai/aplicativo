@@ -1,10 +1,3 @@
-let usuarios = [
-  { "matricula": "1001", "nome": "Ana Souza", "senha": "cantina123", "perfil": "atendente", "ativo": true },
-  { "matricula": "1002", "nome": "Bruno Lima", "senha": "lanche2026", "perfil": "atendente", "ativo": true },
-  { "matricula": "2001", "nome": "Carla Mendes", "senha": "super2026", "perfil": "supervisor", "ativo": true },
-  { "matricula": "2002", "nome": "Diego Rocha", "senha": "diego2026", "perfil": "atendente", "ativo": false }
-];
-
 
 function mostrarMensagem(texto, tipo) {
   const mensagem = document.getElementById("mensagem");
@@ -24,7 +17,11 @@ function entrar() {
 
   const resultado = autenticar(usuarios, matricula, senha);
 
+  console.log(resultado);
   if (resultado.aceito) {
+    // localStorage('matricula', resultado.usuario.matricula);
+    // localStorage('nome', resultado.usuario.nome);
+    // localStorage('perfil', resultado.usuario.perfil);
     mostrarMensagem(resultado.mensagem + " Perfil: " + resultado.usuario.perfil + ".", "sucesso");
   } else {
     mostrarMensagem(resultado.mensagem, "erro");

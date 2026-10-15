@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrar | Cantina MetalVale</title>
+    <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+
+    <header class="topo">
+        <h1 class="marca">Cantina <span>MetalVale</span></h1>
+        <p class="slogan">Retirada de lanches sem ficha de papel</p>
+    </header>
+
+    <main class="conteudo">
+        <table id="retorno_tabela"></table>
+    </main>
+
+    <footer class="rodape">
+        <p>MetalVale Componentes S.A. &bull; Vale do Itajaí/SC</p>
+    </footer>
+
+    <script src="js/usuarios.js"></script>
+    <script src="js/funcoes.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+    let html = '<tr><th>Matricula</th><th>Nome</th><th>Perfil</th></tr>';
+    usuarios.forEach(usuario => {
+        html += '<tr>';
+        html += '<td>'+usuario.matricula+'</td>';
+        html += '<td>'+usuario.nome+'</td>';
+        html += '<td>'+usuario.perfil+'</td>';
+        html += '</tr>';
+    });
+    document.getElementById('retorno_tabela').innerHTML = html;
+    </script>
+
+    
+</body>
+</html>

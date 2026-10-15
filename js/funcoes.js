@@ -22,7 +22,7 @@ function validarCampos(matricula, senha) {
 
 function autenticar(usuarios, matricula, senha) {
   const usuario = buscarUsuario(usuarios, matricula);
-
+ 
   if (usuario === null || usuario.senha !== senha) {
     return { aceito: false, mensagem: "Matrícula ou senha incorreta.", usuario: null };
   }

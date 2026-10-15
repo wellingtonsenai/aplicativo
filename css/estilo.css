@@ -152,6 +152,27 @@ button:hover {
     padding: 16px;
 }
 
+table {
+    width: 60%;
+    margin-left: 20%;
+}
+
+td, th {
+    border: 1px solid black;
+    text-align: left;
+    padding: 8px;
+    width: 25%;
+    float: left;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+ tr{
+    height: auto;
+    float: left;
+    width: 100%;
+ }
 @media (min-width: 768px) {
     .topo {
         padding: 48px 16px 72px;
