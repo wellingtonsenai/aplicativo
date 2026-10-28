@@ -1,12 +1,3 @@
-function buscarUsuario(usuarios, matricula) {
-  const encontrados = usuarios.filter((usuario) => usuario.matricula === matricula);
-
-  if (encontrados.length > 0) {
-    return encontrados[0];
-  }
-  return null;
-}
-
 function validarCampos(matricula, senha) {
   if (matricula === "" && senha === "") {
     return "Informe a matrícula e a senha.";
@@ -20,11 +11,18 @@ function validarCampos(matricula, senha) {
   return "";
 }
 
-function autenticar(usuarios, matricula, senha) {
-  const usuario = buscarUsuario(usuarios, matricula);
- 
-  if (usuario === null || usuario.senha !== senha) {
-    return { aceito: false, mensagem: "Matrícula ou senha incorreta.", usuario: null };
+async function autenticar(matricula, senha) {
+  const resposta = await fetch('api/login.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ matricula: matricula, senha: senha })
+  });
+  const resultado = await resposta.json();
+
+  if (resultado.aceito) {
+    localStorage.setItem('nome', resultado.usuario.nome);
+    localStorage.setItem('matricula', resultado.usuario.matricula);
+    localStorage.setItem('perfil', resultado.usuario.perfil);
   }
-  return { aceito: true, mensagem: `Bem-vindo(a), ${usuario.nome}!`, usuario: usuario };
+  return resultado;
 }

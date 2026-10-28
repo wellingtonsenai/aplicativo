@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turmas | Cantina MetalVale</title>
+    <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+
+    <header class="topo">
+        <h1 class="marca">Cantina <span>MetalVale</span></h1>
+        <p class="slogan">Retirada de lanches sem ficha de papel</p>
+        <nav id="menu" class="menu"></nav>
+    </header>
+
+    <main class="conteudo">
+        <div class="painel">
+            <button class="inserir" onclick="abrirFormulario(-1)">Inserir turma</button>
+
+            <section class="cartao" id="formulario" hidden>
+                <h2 id="titulo-form">Nova turma</h2>
+                <form onsubmit="salvar(); return false;">
+                    <label for="nome">Nome da turma</label>
+                    <input id="nome" type="text" placeholder="Ex.: Desenvolvimento de Sistemas V1 22255" required>
+
+                    <button type="submit">Salvar</button>
+                    <button type="button" class="secundario" onclick="fecharFormulario()">Cancelar</button>
+                </form>
+                <p id="mensagem" class="mensagem" role="status" aria-live="polite"></p>
+            </section>
+
+            <table id="retorno_tabela"></table>
+        </div>
+    </main>
+
+    <footer class="rodape">
+        <p>MetalVale Componentes S.A. &bull; Vale do Itajaí/SC</p>
+    </footer>
+
+    <script src="js/funcoes.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+    let turmas = [];
+
+    async function chamarApi(opcoes) {
+        const resposta = await fetch('api/turmas.php', opcoes);
+        if (resposta.status === 401) {
+            alert('Faça login como supervisor.');
+            location.href = 'index.html';
+        }
+        return resposta.json();
+    }
+
+    async function carregar() {
+        turmas = await chamarApi();
+        listar();
+    }
+
+    function enviar(dados) {
+        return chamarApi({
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dados)
+        });
+    }
+
+    function listar() {
+        let html = '<tr><th>Turma</th><th>Alunos</th><th>Ações</th></tr>';
+        turmas.forEach((turma, i) => {
+            html += '<tr>';
+            html += '<td>'+turma.nome+'</td>';
+            html += '<td>'+turma.alunos+'</td>';
+            html += '<td><button onclick="abrirFormulario('+i+')">Editar</button> ';
+            html += '<button class="excluir" onclick="excluir('+i+')">Excluir</button></td>';
+            html += '</tr>';
+        });
+        document.getElementById('retorno_tabela').innerHTML = html;
+    }
+
+    let indiceEdicao = -1; // -1 = inserindo, senão posição da turma no array
+
+    function abrirFormulario(i) {
+        indiceEdicao = i;
+        document.getElementById('titulo-form').textContent = i === -1 ? 'Nova turma' : 'Editar turma';
+        document.getElementById('nome').value = i === -1 ? '' : turmas[i].nome;
+        mostrarMensagem('', '');
+        document.getElementById('formulario').hidden = false;
+        document.getElementById('nome').focus();
+    }
+
+    function fecharFormulario() {
+        document.getElementById('formulario').hidden = true;
+    }
+
+    async function salvar() {
+        const dados = {
+            acao: indiceEdicao === -1 ? 'inserir' : 'editar',
+            id: indiceEdicao === -1 ? 0 : turmas[indiceEdicao].id,
+            nome: document.getElementById('nome').value.trim()
+        };
+        if (dados.nome === '') {
+            mostrarMensagem('Informe o nome da turma.', 'erro');
+            return;
+        }
+        const resultado = await enviar(dados);
+        if (resultado.erro) {
+            mostrarMensagem(resultado.erro, 'erro');
+            return;
+        }
+        fecharFormulario();
+        carregar();
+    }
+
+    async function excluir(i) {
+        if (!confirm('Excluir a turma ' + turmas[i].nome + '?')) return;
+        const resultado = await enviar({ acao: 'excluir', id: turmas[i].id });
+        if (resultado.erro) {
+            alert(resultado.erro);
+            return;
+        }
+        fecharFormulario(); // evita editar a posição errada depois de recarregar
+        carregar();
+    }
+
+    carregar();
+    </script>
+
+</body>
+</html>

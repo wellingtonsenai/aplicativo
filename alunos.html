@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alunos | Cantina MetalVale</title>
+    <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+
+    <header class="topo">
+        <h1 class="marca">Cantina <span>MetalVale</span></h1>
+        <p class="slogan">Retirada de lanches sem ficha de papel</p>
+        <nav id="menu" class="menu"></nav>
+    </header>
+
+    <main class="conteudo">
+        <div class="painel">
+            <button class="inserir" onclick="abrirFormulario(-1)">Inserir aluno</button>
+
+            <section class="cartao" id="formulario" hidden>
+                <h2 id="titulo-form">Novo aluno</h2>
+                <form onsubmit="salvar(); return false;">
+                    <label for="matricula">Matrícula</label>
+                    <input id="matricula" type="text" required>
+
+                    <label for="nome">Nome</label>
+                    <input id="nome" type="text" required>
+
+                    <label for="turma">Turma</label>
+                    <select id="turma" required></select>
+
+                    <label for="ativo">Ativo</label>
+                    <select id="ativo">
+                        <option value="1">sim</option>
+                        <option value="0">não</option>
+                    </select>
+
+                    <button type="submit">Salvar</button>
+                    <button type="button" class="secundario" onclick="fecharFormulario()">Cancelar</button>
+                </form>
+                <p id="mensagem" class="mensagem" role="status" aria-live="polite"></p>
+            </section>
+
+            <table id="retorno_tabela"></table>
+        </div>
+    </main>
+
+    <footer class="rodape">
+        <p>MetalVale Componentes S.A. &bull; Vale do Itajaí/SC</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="js/funcoes.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+    let alunos = [];
+
+    async function chamarApi(opcoes) {
+        const resposta = await fetch('api/alunos.php', opcoes);
+        if (resposta.status === 401) {
+            alert('Faça login como supervisor.');
+            location.href = 'index.html';
+        }
+        return resposta.json();
+    }
+
+    async function carregar() {
+        alunos = await chamarApi();
+        // Turmas cadastradas na tela Turmas, para o select do formulário
+        const turmas = await (await fetch('api/turmas.php')).json();
+        let opcoes = '<option value="">Selecione a turma</option>';
+        turmas.forEach(turma => {
+            opcoes += '<option value="' + turma.id + '">' + turma.nome + '</option>';
+        });
+        document.getElementById('turma').innerHTML = opcoes;
+        listar();
+    }
+
+    function enviar(dados) {
+        return chamarApi({
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dados)
+        });
+    }
+
+    function listar() {
+        let html = '<tr><th>Matricula</th><th>Nome</th><th>Turma</th><th>Ações</th></tr>';
+        alunos.forEach((aluno, i) => {
+            html += '<tr>';
+            html += '<td>'+aluno.matricula+'</td>';
+            html += '<td>'+aluno.nome+(aluno.ativo == 1 ? '' : ' (inativo)')+'</td>';
+            html += '<td>'+aluno.turma+'</td>';
+            html += '<td><button onclick="abrirFormulario('+i+')">Editar</button> ';
+            html += '<button onclick="baixarQr('+i+')">QR</button> ';
+            html += '<button class="excluir" onclick="excluir('+i+')">Excluir</button></td>';
+            html += '</tr>';
+        });
+        document.getElementById('retorno_tabela').innerHTML = html;
+    }
+
+    let indiceEdicao = -1; // -1 = inserindo, senão posição do aluno no array
+
+    function abrirFormulario(i) {
+        indiceEdicao = i;
+        const aluno = i === -1 ? { matricula: '', nome: '', turma_id: '', ativo: 1 } : alunos[i];
+        document.getElementById('titulo-form').textContent = i === -1 ? 'Novo aluno' : 'Editar aluno';
+        document.getElementById('matricula').value = aluno.matricula;
+        document.getElementById('nome').value = aluno.nome;
+        document.getElementById('turma').value = aluno.turma_id;
+        document.getElementById('ativo').value = String(aluno.ativo);
+        mostrarMensagem('', '');
+        document.getElementById('formulario').hidden = false;
+        document.getElementById('matricula').focus();
+    }
+
+    function fecharFormulario() {
+        document.getElementById('formulario').hidden = true;
+    }
+
+    // Baixa um PNG com nome, matrícula • turma e o QR do aluno
+    function baixarQr(i) {
+        const aluno = alunos[i];
+        const area = document.createElement('div'); // fora da tela: só serve para desenhar o QR
+        new QRCode(area, { text: aluno.codigo, width: 220, height: 220 });
+        const qr = area.querySelector('canvas');
+
+        const subtitulo = aluno.matricula + ' • ' + aluno.turma;
+        const fonteNome = 'bold 26px "Segoe UI", Arial, sans-serif';
+        const fonteSub = '16px "Segoe UI", Arial, sans-serif';
+        const margem = 24;
+        const topoQr = margem + 36 + 28 + 16; // nome + subtítulo + espaço
+
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        ctx.font = fonteNome;
+        const larguraNome = ctx.measureText(aluno.nome).width;
+        ctx.font = fonteSub;
+        const larguraSub = ctx.measureText(subtitulo).width;
+        canvas.width = Math.ceil(Math.max(qr.width, larguraNome, larguraSub)) + margem * 2;
+        canvas.height = topoQr + qr.height + margem;
+
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.textBaseline = 'top';
+        ctx.fillStyle = '#1f4e79';
+        ctx.font = fonteNome;
+        ctx.fillText(aluno.nome, margem, margem);
+        ctx.fillStyle = '#5f6b76';
+        ctx.font = fonteSub;
+        ctx.fillText(subtitulo, margem, margem + 36);
+        ctx.drawImage(qr, (canvas.width - qr.width) / 2, topoQr);
+
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL('image/png');
+        link.download = 'qrcode-' + aluno.matricula + '.png';
+        link.click();
+    }
+
+    async function salvar() {
+        const dados = {
+            acao: indiceEdicao === -1 ? 'inserir' : 'editar',
+            id: indiceEdicao === -1 ? 0 : alunos[indiceEdicao].id,
+            matricula: document.getElementById('matricula').value.trim(),
+            nome: document.getElementById('nome').value.trim(),
+            turma_id: document.getElementById('turma').value,
+            ativo: document.getElementById('ativo').value
+        };
+        if (dados.matricula === '' || dados.nome === '' || dados.turma_id === '') {
+            mostrarMensagem('Preencha todos os campos.', 'erro');
+            return;
+        }
+        const resultado = await enviar(dados);
+        if (resultado.erro) {
+            mostrarMensagem(resultado.erro, 'erro');
+            return;
+        }
+        fecharFormulario();
+        carregar();
+    }
+
+    async function excluir(i) {
+        if (!confirm('Excluir ' + alunos[i].nome + '?')) return;
+        const resultado = await enviar({ acao: 'excluir', id: alunos[i].id });
+        if (resultado.erro) {
+            alert(resultado.erro);
+            return;
+        }
+        fecharFormulario(); // evita editar a posição errada depois de recarregar
+        carregar();
+    }
+
+    carregar();
+    </script>
+
+</body>
+</html>

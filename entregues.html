@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entregues | Cantina MetalVale</title>
+    <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+
+    <header class="topo">
+        <h1 class="marca">Cantina <span>MetalVale</span></h1>
+        <p class="slogan">Retirada de lanches sem ficha de papel</p>
+        <nav id="menu" class="menu"></nav>
+    </header>
+
+    <main class="conteudo">
+        <div class="painel">
+            <div class="filtros">
+                <div>
+                    <label for="data">Dia</label>
+                    <input id="data" type="date" onchange="carregar()">
+                </div>
+                <div>
+                    <label for="turma">Turma</label>
+                    <select id="turma" onchange="carregar()">
+                        <option value="">Todas as turmas</option>
+                    </select>
+                </div>
+            </div>
+
+            <p id="total" class="total"></p>
+
+            <table id="retorno_tabela"></table>
+        </div>
+    </main>
+
+    <footer class="rodape">
+        <p>MetalVale Componentes S.A. &bull; Vale do Itajaí/SC</p>
+    </footer>
+
+    <script src="js/funcoes.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+    async function buscar(url) {
+        const resposta = await fetch(url);
+        if (resposta.status === 401) {
+            alert('Faça login como supervisor.');
+            location.href = 'index.html';
+        }
+        return resposta.json();
+    }
+
+    async function carregarTurmas() {
+        const turmas = await buscar('api/turmas.php');
+        let opcoes = '<option value="">Todas as turmas</option>';
+        turmas.forEach(turma => {
+            opcoes += '<option value="' + turma.id + '">' + turma.nome + '</option>';
+        });
+        document.getElementById('turma').innerHTML = opcoes;
+    }
+
+    async function carregar() {
+        const data = document.getElementById('data').value;
+        const turma = document.getElementById('turma').value;
+        const entregas = await buscar('api/entregas.php?data=' + data + '&turma_id=' + turma);
+
+        let html = '<tr><th>Horário</th><th>Aluno</th><th>Matrícula</th><th>Turma</th><th>Entregue por</th></tr>';
+        entregas.forEach(entrega => {
+            html += '<tr>';
+            html += '<td>'+entrega.hora+'</td>';
+            html += '<td>'+entrega.nome+'</td>';
+            html += '<td>'+entrega.matricula+'</td>';
+            html += '<td>'+entrega.turma+'</td>';
+            html += '<td>'+(entrega.atendente || '—')+'</td>';
+            html += '</tr>';
+        });
+        if (entregas.length === 0) {
+            html += '<tr><td colspan="5">Nenhum lanche entregue neste dia.</td></tr>';
+        }
+        document.getElementById('retorno_tabela').innerHTML = html;
+        document.getElementById('total').textContent = entregas.length + (entregas.length === 1 ? ' lanche entregue' : ' lanches entregues');
+    }
+
+    // Abre no dia de hoje (data local, não UTC)
+    const hoje = new Date();
+    document.getElementById('data').value = hoje.getFullYear() + '-' + String(hoje.getMonth() + 1).padStart(2, '0') + '-' + String(hoje.getDate()).padStart(2, '0');
+    carregarTurmas();
+    carregar();
+    </script>
+
+</body>
+</html>

@@ -3,13 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Entrar | Cantina MetalVale</title>
+    <title>Meu perfil | Cantina MetalVale</title>
     <link rel="stylesheet" href="css/estilo.css">
 
     <style>
-        #nome, #matricula, #perfil{
-            width: 100%;
-            float: left;
+        .dados dt {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--texto-claro);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 16px;
+        }
+        .dados dd {
+            font-size: 18px;
+            padding: 6px 0 10px;
+            border-bottom: 1px solid var(--borda);
+        }
+        #perfil {
+            text-transform: capitalize;
         }
     </style>
 </head>
@@ -18,17 +30,27 @@
     <header class="topo">
         <h1 class="marca">Cantina <span>MetalVale</span></h1>
         <p class="slogan">Retirada de lanches sem ficha de papel</p>
+        <nav id="menu" class="menu"></nav>
     </header>
 
     <main class="conteudo">
-       <p id="nome"></p>
-       <p id="matricula"></p>
-       <p id="perfil"></p>
+        <section class="cartao">
+            <h2 id="nome"></h2>
+            <p class="instrucao">Dados do seu acesso</p>
+            <dl class="dados">
+                <dt>Matrícula</dt>
+                <dd id="matricula"></dd>
+                <dt>Perfil</dt>
+                <dd id="perfil"></dd>
+            </dl>
+        </section>
     </main>
 
     <footer class="rodape">
         <p>MetalVale Componentes S.A. &bull; Vale do Itajaí/SC</p>
     </footer>
+
+    <script src="js/app.js"></script>
 
     <script>
         document.getElementById("nome").innerText = localStorage.getItem('nome');

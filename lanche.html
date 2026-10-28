@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pegar lanche | Cantina MetalVale</title>
+    <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+
+    <header class="topo">
+        <h1 class="marca">Cantina <span>MetalVale</span></h1>
+        <p class="slogan">Retirada de lanches sem ficha de papel</p>
+        <nav id="menu" class="menu"></nav>
+    </header>
+
+    <main class="conteudo">
+        <section class="cartao">
+            <h2>Pegar lanche</h2>
+            <div id="captura">
+                <p class="instrucao">Aponte o QR Code do aluno para a câmera.</p>
+
+                <div id="leitor"></div>
+
+                <p id="mensagem" class="mensagem" role="status" aria-live="polite"></p>
+            </div>
+
+            <div id="resultado" class="resultado" hidden role="status" aria-live="assertive">
+                <div id="resultado-icone" class="resultado-icone"></div>
+                <h3 id="resultado-titulo"></h3>
+                <p id="resultado-nome" class="resultado-nome"></p>
+                <p id="resultado-detalhe" class="instrucao"></p>
+                <button id="botao-proximo" type="button" onclick="proximo()">Ler próximo QR Code</button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="rodape">
+        <p>MetalVale Componentes S.A. &bull; Vale do Itajaí/SC</p>
+    </footer>
+
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <script src="js/funcoes.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+    let ocupado = false; // a câmera lê o mesmo QR várias vezes por segundo
+    let cameraLigada = false;
+
+    const leitor = new Html5Qrcode('leitor');
+
+    function ligarCamera() {
+        leitor.start({ facingMode: 'environment' }, { fps: 10, qrbox: 220 }, darBaixa)
+            .then(() => { cameraLigada = true; })
+            .catch(() => mostrarMensagem('Câmera indisponível. Verifique se o navegador tem permissão para usar a câmera.', 'erro'));
+    }
+
+    async function darBaixa(codigo) {
+        if (ocupado) return;
+        ocupado = true;
+        if (cameraLigada) {
+            cameraLigada = false;
+            leitor.stop();
+        }
+
+        let resultado;
+        try {
+            const resposta = await fetch('api/entregas.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ codigo: codigo })
+            });
+            if (resposta.status === 401) {
+                alert('Faça login para continuar.');
+                location.href = 'index.html';
+                return;
+            }
+            resultado = await resposta.json();
+        } catch (e) {
+            resultado = { erro: 'Falha de comunicação com o servidor. Tente de novo.' };
+        }
+
+        const hora = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        if (resultado.ok) {
+            mostrarResultado('sucesso', '✓', 'Lanche entregue', resultado.aluno.nome,
+                resultado.aluno.matricula + ' • ' + resultado.aluno.turma + ' • ' + hora);
+        } else {
+            mostrarResultado('erro', '✗', 'Lanche NÃO liberado', resultado.erro, '');
+        }
+    }
+
+    function mostrarResultado(tipo, icone, titulo, nome, detalhe) {
+        document.getElementById('captura').hidden = true;
+        document.getElementById('resultado').className = 'resultado ' + tipo;
+        document.getElementById('resultado-icone').textContent = icone;
+        document.getElementById('resultado-titulo').textContent = titulo;
+        document.getElementById('resultado-nome').textContent = nome;
+        document.getElementById('resultado-detalhe').textContent = detalhe;
+        document.getElementById('resultado').hidden = false;
+        document.getElementById('botao-proximo').focus();
+    }
+
+    function proximo() {
+        document.getElementById('resultado').hidden = true;
+        document.getElementById('captura').hidden = false;
+        mostrarMensagem('', '');
+        ocupado = false;
+        ligarCamera();
+    }
+
+    ligarCamera();
+    </script>
+
+</body>
+</html>
