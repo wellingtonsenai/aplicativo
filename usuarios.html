@@ -96,7 +96,7 @@
 
     function abrirFormulario(i) {
         indiceEdicao = i;
-        const usuario =  usuarios[i];
+        const usuario = i === -1 ? { matricula: '', nome: '', perfil: 'atendente' } : usuarios[i];
         document.getElementById('titulo-form').textContent = i === -1 ? 'Novo usuário' : 'Editar usuário';
         document.getElementById('matricula').value = usuario.matricula;
         document.getElementById('nome').value = usuario.nome;
